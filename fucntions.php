@@ -164,4 +164,6 @@ $query_where='1=1';
 $query_where.=getSearch($nc_core->db->prepare($_GET['position']),'VacancyName');
 $query_where.=getSearch($nc_core->db->prepare($_GET['division']),'Division');
 $query_where.=getSearch($nc_core->db->prepare($_GET['type']),'TypePosition');
+
+#test change whith git
 ?>
