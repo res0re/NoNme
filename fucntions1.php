@@ -168,4 +168,10 @@ $query_where.=getSearch($nc_core->db->prepare($_GET['type']),'TypePosition');
 #test change whith git
 #another change at file
 
+//вывод ФИО с обрезанием Фамилии по первой букве
+//$name - полное ФИО
+function getroundfio ($name) {
+  $name=explode(" ",$name);
+  return $name[1].' '.$name[2].' '.mb_substr($name[0], 0, 1).'.';
+}
 ?>
