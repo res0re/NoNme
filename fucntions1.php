@@ -165,13 +165,34 @@ $query_where.=getSearch($nc_core->db->prepare($_GET['position']),'VacancyName');
 $query_where.=getSearch($nc_core->db->prepare($_GET['division']),'Division');
 $query_where.=getSearch($nc_core->db->prepare($_GET['type']),'TypePosition');
 
-#test change whith git
-#another change at file
 
-//вывод ФИО с обрезанием Фамилии по первой букве
-//$name - полное ФИО
-function getroundfio ($name) {
-  $name=explode(" ",$name);
-  return $name[1].' '.$name[2].' '.mb_substr($name[0], 0, 1).'.';
+
+
+#функция для сортировки массива по определенному полю
+#$array - массив для сортировки
+#$key - ключ по которому будет осуществлятся сортировка
+#$sort - сортировка SORT_ASC(по возрастанию) или SORT_DESC(по убыванию)
+#Пример использования arraySort($pages,'sort',SORT_ASC)
+function arraySort($array, $key = 'sort', $sort = SORT_ASC) {
+  if ($sort!=SORT_ASC and $sort!=SORT_DESC) {
+      $sort=SORT_ASC;
+  }
+  if ($sort==SORT_ASC) {
+      usort($array, function($a, $b) use ($key, $sort) {
+      if ($a == $b) {
+          return 0;
+      }
+          return ($a > $b) ? -1 : 1;
+      });
+      return $array;
+  } else {
+      usort($array, function($a, $b) use ($key, $sort) {
+      if ($a == $b) {
+          return 0;
+      }
+          return ($a < $b) ? -1 : 1;
+      });
+      return $array;
+  }
 }
 ?>
