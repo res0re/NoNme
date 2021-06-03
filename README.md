@@ -1,6 +1,6 @@
 # NoNme
 Примеры кода.
-Netcat - примеры кода для cms Netcat
+Netcat - примеры кода для cms Netcat \n;
 codewars - примеры выполненых задач на codewars.com
 functions.php - примеры функций
 classes - примеры ООП
