@@ -156,4 +156,36 @@ function arraySort($array, $key = 'sort', $sort = SORT_ASC)
   });
   return $array;
 }
+
+/* Получение ip пользователя */
+function GetIP() 
+{
+  if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+  } else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+  }
+  return $ip;
+}
+
+/* генератор паролей*/
+function gen_password($length = 6)
+{
+  $password = '';
+  $arr = array(
+      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
+      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+      'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
+      '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+  );
+
+  for ($i = 0; $i < $length; $i++) 
+  {
+      $password .= $arr[random_int(0, count($arr) - 1)];
+  }
+  return $password;
+}
 ?>
