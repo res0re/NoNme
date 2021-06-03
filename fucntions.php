@@ -1,45 +1,18 @@
 <?
+/*
+Функции которые могут пригодится
+*/
+
+
 //проверяем наличие фотографии
 //imageurl - значение из таблицы
-function imageThere ($imageurl) {
+function isImage ($imageurl) {
   if (!empty($imageurl)) {
     return $imageurl;
   } else {
     return '/images/tm/img/noimg.jpg';
   }
 }
-
-//приводим дату к нормальному виду
-//day - день
-//month - месяц
-//months_inner - массив с месяцами
-function dataWithMonth($day,$month,$year,$months_inner) {
-    return $day.' '.$months_inner[$month].', '.$year;
-}
-
-
-// вывод даты в нормальном формате даты и времени дд.мм.гггг и времени чч:мм из формата даты mysql
-//$date - дата из таблицы mysql 
-//$separator - разделитель для даты
-//$time - 1 - вывести время 0 - не выводить время
-//$dateenable - 1 вывести дату 0 - не выводить дату
-//$separatorTime - разделитель для времени
-function createDateFromTable($date,$separator='.',$time='0',$dateenable='1',$separatorTime=':') {
-  $date = explode(' ', $date);
-  if ($time==1) {
-    $time=explode(':',$date[1]);
-    $time = ' '.$time[0].$separatorTime.$time[1].$separatorTime.$time[2];
-  } else {
-    $time='';
-  }
-  if ($dateenable==1) {
-    $date = explode('-', $date[0]);
-    return $date[2].$separator.$date[1].$separator.$date[0].$time;
-  } else {
-    return $time;
-  }
-}
-
 
 #функция вывода бесконечно вложенных списков штатки
 #$all_arr - массив с данными полученный запросом
@@ -52,13 +25,13 @@ function childParent ($all_arr,$childparents,$firstparent) {
   $thisid='';
   
   if (!empty($all_arr)) {
-    foreach ($all_arr as $rowx) {
-      $thisid=$rowx['ThisID'];
-      if ($rowx['ParentID']==$firstparent) {
-        if (empty($childparents[$rowx['ThisID']])) {
-          $html.='<li class="structure-item"><span class="structure-title">'.$rowx['FIO'].'<br> Должность: '.$rowx['Position'].'<br> Ставка: '.$rowx['Rate'].'</span></li>';
+    foreach ($all_arr as $row) {
+      $thisid=$row['ThisID'];
+      if ($row['ParentID']==$firstparent) {
+        if (empty($childparents[$row['ThisID']])) {
+          $html.='<li class="structure-item"><span class="structure-title">'.$row['FIO'].'<br> Должность: '.$row['Position'].'<br> Ставка: '.$row['Rate'].'</span></li>';
         } else {
-          $html.='<li data-accordion-item class="structure-item"><a class="structure-title" href="#" target="_blank">'.$rowx['FIO'].'<br> Должность: '.$rowx['Position'].'<br> Ставка: '.$rowx['Rate'].'</a><div class="structure-content" data-tab-content><ul class="structure" data-accordion>';
+          $html.='<li data-accordion-item class="structure-item"><a class="structure-title" href="#" target="_blank">'.$row['FIO'].'<br> Должность: '.$row['Position'].'<br> Ставка: '.$row['Rate'].'</a><div class="structure-content" data-tab-content><ul class="structure" data-accordion>';
           $html.=childParent($all_arr,$childparents,$thisid);
           $html.='</ul></div></li>';
         }
@@ -116,13 +89,13 @@ function clear_dir($dir,$date=0,$limited=0,$limit=1000) {
     if ($date>datefile($file,$dir)) {
     echo $date.'>'.datefile($file,$dir).'<br>';
       if (is_dir($dir.$file)) {
-        //clear_dir($dir.$file.'/');
-        //rmdir($dir.$file);
-        //echo $dir.$file.' dir is deleted <br>';
+        clear_dir($dir.$file.'/');
+        rmdir($dir.$file);
+        echo $dir.$file.' dir is deleted <br>';
       }
       else {
-        //unlink($dir.$file);
-        //echo $dir.$file.' is deleted <br>';
+        unlink($dir.$file);
+        echo $dir.$file.' is deleted <br>';
       }
       
       if ($limited==1) {
@@ -135,8 +108,6 @@ function clear_dir($dir,$date=0,$limited=0,$limit=1000) {
     }
   }
 }
-
-
 
 #формирует строку для поиска по таблице
 #$getpar - строка с поисковыми значениями прописанными через ';'
@@ -159,40 +130,30 @@ function getSearch($getpar='',$fieldname='',$separator=';') {
   }
 }
 
-#формируем поисковой запрос
-$query_where='1=1';
-$query_where.=getSearch($nc_core->db->prepare($_GET['position']),'VacancyName');
-$query_where.=getSearch($nc_core->db->prepare($_GET['division']),'Division');
-$query_where.=getSearch($nc_core->db->prepare($_GET['type']),'TypePosition');
-
-
-
 
 #функция для сортировки массива по определенному полю
 #$array - массив для сортировки
 #$key - ключ по которому будет осуществлятся сортировка
 #$sort - сортировка SORT_ASC(по возрастанию) или SORT_DESC(по убыванию)
 #Пример использования arraySort($pages,'sort',SORT_ASC)
-function arraySort($array, $key = 'sort', $sort = SORT_ASC) {
-  if ($sort!=SORT_ASC and $sort!=SORT_DESC) {
-      $sort=SORT_ASC;
+function arraySort($array, $key = 'sort', $sort = SORT_ASC) 
+{
+  if ($sort!=SORT_ASC and $sort!=SORT_DESC) 
+  {
+    $sort=SORT_ASC;
   }
-  if ($sort==SORT_ASC) {
-      usort($array, function($a, $b) use ($key, $sort) {
-      if ($a == $b) {
-          return 0;
-      }
-          return ($a > $b) ? -1 : 1;
-      });
-      return $array;
-  } else {
-      usort($array, function($a, $b) use ($key, $sort) {
-      if ($a == $b) {
-          return 0;
-      }
-          return ($a < $b) ? -1 : 1;
-      });
-      return $array;
-  }
+  usort($array, function($a, $b) use ($key, $sort) 
+  {
+    if ($a == $b) 
+    {
+      return 0;
+    }
+    if ($sort==SORT_ASC) {
+      return ($a > $b) ? -1 : 1;
+    } else {
+      return ($a < $b) ? -1 : 1;
+    }
+  });
+  return $array;
 }
 ?>
