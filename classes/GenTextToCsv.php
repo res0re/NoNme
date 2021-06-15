@@ -4,10 +4,14 @@ class GenTextToCsv {
   private $table;
   private $fields = [];
   private $elements = [];
+  private $limit;
 
-  public function __construct($table) {
+  public function __construct($table, $limit = 0) {
     $this->nc_core = nc_Core::get_object();
     $this->table = (int) $table;
+    if (!empty((int) $limit)) {
+      $this->limit = $limit;
+    }
   }
   
   public function getText($from = 'Windows-1251', $to = 'UTF-8') {
@@ -22,12 +26,12 @@ class GenTextToCsv {
   //generatie fields string
   private function genFieldsString() {
   
-    $this->fields = $this->nc_core->db->get_results("Select Description,Field_Name from Field where Class_ID='".$this->table."' order by Field_ID", ARRAY_A);
+    $this->fields = $this->nc_core->db->get_results("Select Description,Field_Name from Field where Class_ID='" . $this->table . "' order by Field_ID", ARRAY_A);
     
     $fieldsName = '';
     if (!empty($this->fields)) {
       foreach ($this->fields as $field) {
-        $fieldsName .= '"' . $field['Description']. '";';
+        $fieldsName .= '"' . $field['Description'] . '";';
       }
       $fieldsName .= "\n";
       return $fieldsName;
@@ -36,8 +40,10 @@ class GenTextToCsv {
 
   //generate elements string
   private function genElementsString() {
-  
-    $this->elements = $this->nc_core->db->get_results("select * from Message".$this->table, ARRAY_A);
+    $limit = '';
+    if (!empty($this->limit)) $limit = ' limit ' . $this->limit;
+
+    $this->elements = $this->nc_core->db->get_results("select * from Message" . $this->table . $limit, ARRAY_A);
     
     $file_content = '';
     if (!empty($this->elements)) {
