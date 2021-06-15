@@ -4,7 +4,7 @@ class GenTextToCsv {
   private $table;
   private $fields = [];
   private $elements = [];
-  private $limit;
+  private $limit = 0;
 
   public function __construct($table, $limit = 0) {
     $this->nc_core = nc_Core::get_object();
@@ -26,7 +26,7 @@ class GenTextToCsv {
   //generatie fields string
   private function genFieldsString() {
   
-    $this->fields = $this->nc_core->db->get_results("Select Description,Field_Name from Field where Class_ID='" . $this->table . "' order by Field_ID", ARRAY_A);
+    $this->fields = $this->nc_core->db->get_results("Select Description, Field_Name from Field where Class_ID='" . $this->table . "' and TypeOfData_ID!=6 order by Field_ID", ARRAY_A);
     
     $fieldsName = '';
     if (!empty($this->fields)) {
