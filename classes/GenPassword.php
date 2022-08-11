@@ -1,13 +1,7 @@
 <?
 class GenPassword {
-   private $lenght;
 
-   public function __construct($num) 
-   {
-      $this->lenght = $num;
-   }
-
-   public function getPass() 
+   static function getPass($len) 
    {
       $password = '';
       $arr = [
@@ -18,7 +12,7 @@ class GenPassword {
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
       ];
 
-      for ($i = 0; $i < $this->lenght; $i++) 
+      for ($i = 0; $i < $len; $i++) 
       {
             $password .= $arr[random_int(0, count($arr) - 1)];
       }
